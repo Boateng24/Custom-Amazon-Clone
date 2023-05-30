@@ -1,12 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faLocationDot, faMagnifyingGlass, faCartArrowDown} from '@fortawesome/free-solid-svg-icons';
+import {useNavigate} from 'react-router-dom';
+import { useSelector} from 'react-redux';
+import { RootState } from "../store/store";
+import { addItem } from "../slices/cartSlice";
 import i18next from '../config/language/language';
 const Header = () => {
+  const navigate = useNavigate();
+  const cartItemsCount = useSelector((state:RootState) => state.addItemToBasket.products.length);
+
+
+
   
   return (
     <div className="main-nav flex h-16 items-center bg-slate-800 sticky top-0 z-[100] w-screen">
       {/* Amazon logo */}
-      <div className="nav-logo object-contain cursor-pointer">
+      <div className="nav-logo object-contain cursor-pointer" onClick={() => navigate('/')}>
         <img
           src="/amazon-2-logo-svgrepo-com.svg"
           alt="Amazon Logo"
@@ -75,9 +84,11 @@ const Header = () => {
           <span className="orders font-medium">& Orders</span>
         </div>
 
-        <div className="cart__items flex items-start ml-8">{/* Cart icon with text */}</div>
-          <FontAwesomeIcon icon={faCartArrowDown} className="text-white text-3xl mt-1 cursor-pointer"/>
-          <span className="header__optionLineTwo header__baskentCount text-white ml-1">0</span>
+        <div className="cart__items flex items-start ml-8">
+          {/* Cart icon with text */}
+          <FontAwesomeIcon icon={faCartArrowDown} className="text-white text-3xl mt-1 cursor-pointer" onClick={()=> navigate("/cart")}/>
+          <span className="header__optionLineTwo header__baskentCount text-white ml-1">{cartItemsCount}</span>
+        </div>
       </div>
     </div>
   );

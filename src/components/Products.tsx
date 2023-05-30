@@ -3,30 +3,45 @@ import axiosConfig from "../api/axiosInstance";
 import HoverRating from "./Ratings";
 
 import {
+  Button,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
   Typography,
 } from "@mui/material";
+import { addItem } from "../slices/cartSlice";
+import { productType } from "../@types";
+import {useDispatch} from 'react-redux';
+import { AppDispatch} from "../store/store";
 
-const Products = () => {
-  const [products, setProducts] = useState([]);
+
+
+const Products: React.FC = () => {
+  const [products, setProducts] = useState<productType[]>([]);
   const numRows = Math.ceil(products.length / 4);
+
+  const dispatch = useDispatch<AppDispatch>()
 
   const fetchProducts = async () => {
     try {
-        const { data } = await axiosConfig.get("/products");
-        setProducts(data);
-        console.log("data", data);
+      const { data } = await axiosConfig.get("/products");
+      setProducts(data);
+      console.log("data", data);
     } catch (error) {
-        console.error("Error while fetching data", error)
+      console.error("Error while fetching data", error);
     }
   };
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+
+  const handleAddToCart = (product:productType) => {
+    dispatch(addItem(product))
+    console.log(product)
+  }
 
 
   return (
@@ -37,7 +52,7 @@ const Products = () => {
         gap: "1rem",
         marginTop: 20,
         marginRight: 10,
-        marginLeft: 10
+        marginLeft: 10,
       }}
     >
       {/* Create a flex container for each row */}
@@ -91,12 +106,26 @@ const Products = () => {
                     variant="body2"
                     style={{ fontWeight: "bold", marginBottom: "0.5rem" }}
                   >
-                    &#8373;{product.price}
+                    Gh₵{product.price}
                   </Typography>
-                  <HoverRating/>
+                  <HoverRating />
                   <Typography variant="body2" style={{ fontWeight: "bold" }}>
                     {product.category}
                   </Typography>
+                  <Button
+                    sx={{
+                      backgroundColor: "rgb(251, 219, 35)",
+                      fontWeight: "bold",
+                      color: "black",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginLeft: "34%",
+                    }}
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add To Cart
+                  </Button>
                 </CardContent>
               </CardActionArea>
             </Card>
