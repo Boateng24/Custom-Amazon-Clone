@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faLocationDot, faMagnifyingGlass, faCartArrowDown} from '@fortawesome/free-solid-svg-icons';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 import { useSelector} from 'react-redux';
 import { RootState } from "../store/store";
-import { addItem } from "../slices/cartSlice";
-import i18next from '../config/language/language';
+// import { addItem } from "../slices/cartSlice";
+// import i18next from '../config/language/language';
 const Header = () => {
   const navigate = useNavigate();
   const cartItemsCount = useSelector((state:RootState) => state.addItemToBasket.products.length);
@@ -72,11 +72,13 @@ const Header = () => {
          </select>
         </div>
 
+          <Link to={'/login'}>
         <div className="greeting__nav flex flex-col mx-2 text-white ml-8">
           {/* Welcome and Account List */}
           <span className="greet text-xs">Hello, User</span>
           <span className="auth font-medium cursor-pointer">Sign In</span>
         </div>
+          </Link>
 
         <div className="returns__orders__nav flex flex-col mx-2 text-white ml-8 cursor-pointer">
           {/* Returns and orders */}

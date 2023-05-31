@@ -15,8 +15,11 @@ const Subtotal = () => {
               Subotal ({products.length}items): <strong>{value}</strong>
             </p>
             <small className="subtotal__gift flex items-center">
-              <input type="checkbox" className="mr-[5px]" /> This order contains
-              a gift
+              <input
+                type="checkbox"
+                className="mr-[5px]"
+              />{" "}
+              This order contains a gift
             </small>
           </>
         )}
@@ -27,7 +30,16 @@ const Subtotal = () => {
         prefix={"Gh₵"}
       />
       <Button
-        sx={{ border: "1px solid", color: "black", backgroundColor: "#f0c14b", borderRadius:'2px', width:'100%', height:'30px', marginTop:'10px', borderColor:'#a88734 #9c7e31 #846a29' }}
+        sx={{
+          border: "1px solid",
+          color: "black",
+          backgroundColor: "#f0c14b",
+          borderRadius: "2px",
+          width: "100%",
+          height: "30px",
+          marginTop: "10px",
+          borderColor: "#a88734 #9c7e31 #846a29",
+        }}
       >
         Proceed to Checkout
       </Button>

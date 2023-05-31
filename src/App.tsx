@@ -1,8 +1,9 @@
 import Layout from "./components/Layout";
 import PageNotFound from "./pages/PageNotFound";
 import Home from "./pages/Home";
-import {Route, Routes, BrowserRouter as Router} from 'react-router-dom'
 import Cart from "./pages/Cart";
+import Login from "./pages/Login";
+import {Route, Routes, BrowserRouter as Router} from 'react-router-dom'
 import { Provider } from "react-redux";
 import store from "./store/store";
 import {ToastContainer} from 'react-toastify';
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<Layout />} />
             {/* Homepage */}
             <Route index element={<Home />} />
+            <Route path="/login" element={<Login/>}/>
             <Route path="/cart" element={<Cart />} />
             {/* Page not found */}
             <Route path="*" element={<PageNotFound />} />
