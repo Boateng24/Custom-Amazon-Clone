@@ -3,12 +3,14 @@ import {faLocationDot, faMagnifyingGlass, faCartArrowDown} from '@fortawesome/fr
 import {useNavigate, Link} from 'react-router-dom';
 import { useSelector} from 'react-redux';
 import { RootState } from "../store/store";
+import {useAuthState} from 'react-firebase-hooks/auth';
+import {auth} from '../firebase/firebase'
 // import { addItem } from "../slices/cartSlice";
 // import i18next from '../config/language/language';
 const Header = () => {
   const navigate = useNavigate();
   const cartItemsCount = useSelector((state:RootState) => state.addItemToBasket.products.length);
-
+  const [user] = useAuthState(auth)
 
 
   
@@ -75,7 +77,7 @@ const Header = () => {
           <Link to={'/login'}>
         <div className="greeting__nav flex flex-col mx-2 text-white ml-8">
           {/* Welcome and Account List */}
-          <span className="greet text-xs">Hello, User</span>
+          <span className="greet text-xs">Hello, {user ? user.displayName : 'User'}</span>
           <span className="auth font-medium cursor-pointer">Sign In</span>
         </div>
           </Link>
