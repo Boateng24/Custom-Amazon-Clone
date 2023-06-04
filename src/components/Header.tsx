@@ -4,7 +4,8 @@ import {useNavigate, Link} from 'react-router-dom';
 import { useSelector} from 'react-redux';
 import { RootState } from "../store/store";
 import {useAuthState} from 'react-firebase-hooks/auth';
-import {auth} from '../firebase/firebase'
+import {auth} from '../firebase/firebase';
+import {toast} from 'react-toastify';
 // import { addItem } from "../slices/cartSlice";
 // import i18next from '../config/language/language';
 const Header = () => {
@@ -13,6 +14,17 @@ const Header = () => {
   const [user] = useAuthState(auth)
 
 
+  const handleAuth = () => {
+    if(user){
+      try {
+        auth.signOut();
+        toast.success(`${user.displayName} is successfully signed out`)
+      } catch (error) {
+        console.log(error)
+        toast.error(error as string)
+      }
+    }
+  }
   
   return (
     <div className="main-nav flex h-16 items-center bg-slate-800 sticky top-0 z-[100] w-screen">
@@ -74,11 +86,11 @@ const Header = () => {
          </select>
         </div>
 
-          <Link to={'/login'}>
-        <div className="greeting__nav flex flex-col mx-2 text-white ml-8">
+          <Link to={!user ? '/login' : '/'}>
+        <div className="greeting__nav flex flex-col mx-2 text-white ml-8" onClick={handleAuth}>
           {/* Welcome and Account List */}
           <span className="greet text-xs">Hello, {user ? user.displayName : 'User'}</span>
-          <span className="auth font-medium cursor-pointer">Sign In</span>
+          <span className="auth font-medium cursor-pointer">{user ? "Sign Out" : "Sign In"}</span>
         </div>
           </Link>
 
