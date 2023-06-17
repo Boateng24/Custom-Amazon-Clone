@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import { productType } from '../@types';
-import {toast} from 'react-toastify'
+import {toast} from 'react-toastify';
 
 interface CartState {
     products: productType[]
@@ -11,7 +11,6 @@ interface CartState {
 export const getCartTotal = (products:productType[]) => {
     return products?.reduce((total, item) => total + item.price, 0)
 }
-
 
 const storedCartItems = localStorage.getItem('cartItems');
 
@@ -44,9 +43,12 @@ const cartSlice = createSlice({
         }
     },
     
+    emptyBasket:(state) => {
+        state.products = initialState.products 
+    }
    
   },
 });
 
-export const {addItem, removeItem} = cartSlice.actions
+export const {addItem, removeItem, emptyBasket} = cartSlice.actions
 export default cartSlice.reducer

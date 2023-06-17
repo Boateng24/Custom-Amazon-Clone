@@ -3,8 +3,10 @@ import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { getCartTotal } from "../slices/cartSlice";
+import {useNavigate} from 'react-router-dom';
 
 const Subtotal = () => {
+    const navigate = useNavigate()
     const {products} = useSelector((state:RootState) => state.addItemToBasket)
   return (
     <div className="subtotal flex flex-col justify-between w-80 h-40 p-5 bg-slate-50 border border-gray-300 rounded-md">
@@ -40,6 +42,7 @@ const Subtotal = () => {
           marginTop: "10px",
           borderColor: "#a88734 #9c7e31 #846a29",
         }}
+        onClick={() => navigate('/checkout')}
       >
         Proceed to Checkout
       </Button>

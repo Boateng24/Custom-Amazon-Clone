@@ -37,10 +37,10 @@ export default function HoverRating() {
         value={value}
         precision={0.5}
         getLabelText={getLabelText}
-        onChange={(event, newValue) => {
+        onChange={(_event, newValue) => {
           setValue(newValue);
         }}
-        onChangeActive={(event, newHover) => {
+        onChangeActive={(_event, newHover) => {
           setHover(newHover);
         }}
         emptyIcon={

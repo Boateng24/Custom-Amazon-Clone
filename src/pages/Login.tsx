@@ -2,19 +2,33 @@ import AuthLink from '@mui/material/Link';
 import {Link, useNavigate} from 'react-router-dom'
 import {useState} from 'react';
 import {auth} from '../firebase/firebase';
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile} from 'firebase/auth'
+import {login, register} from '../slices/authSlice';
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store/store";
+import { Auth } from 'firebase/auth';
+
+
+
+interface Inputs {
+  auth: Auth;
+  username: string;
+  email: string;
+  password: string;
+}
+
+const InitialState: Inputs = {
+  auth: auth,
+  username: "",
+  email: "",
+  password: "",
+};
 
 
 const Login = () => {
     const navigate = useNavigate();
-    const InitialState = {
-        username: '',
-        email: '',
-        password: ''
-    }
-
-    const [inputs, setInputs] = useState(InitialState);
-    const [login, setLogin] = useState(true)
+    const dispatch = useDispatch<AppDispatch>();
+    const [inputs, setInputs] = useState<Inputs>(InitialState);
+    const [loginUser, setLoginUser] = useState<boolean>(true)
 
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
@@ -24,14 +38,10 @@ const Login = () => {
     const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
-        if (login){
+        if (loginUser){
             try {
-                const userCredentials = await signInWithEmailAndPassword(
-                  auth,
-                  inputs.email,
-                  inputs.password
-                );
-                const user = userCredentials.user;
+                const userCredentials = dispatch(login(inputs))
+                const user = userCredentials;
                 setInputs(InitialState)
                 console.log("Logged In User", user);
                 navigate("/");
@@ -41,17 +51,10 @@ const Login = () => {
             }
         } else {
             try {
-              const userCredentials = await createUserWithEmailAndPassword(
-                auth,
-                inputs.email,
-                inputs.password
-              );
-              const user = userCredentials.user;
-
-              // Update the user's profile to include the username
-              await updateProfile(user, { displayName: inputs.username });
+              const userCredentials = dispatch(register(inputs))
+              const user = userCredentials
               setInputs(InitialState);
-              setLogin(true)
+              setLoginUser(true)
               console.log('Registered:', user);
               
             } catch (error) {
@@ -62,7 +65,7 @@ const Login = () => {
 
 
      const resetState = () => {
-       setLogin(true);
+       setLoginUser(true);
        setInputs(InitialState);
        console.log(inputs);
        
@@ -82,10 +85,10 @@ const Login = () => {
       </div>
       <div className="loginContainer w-96 h-fit rounded-md border border-gray-500 p-5">
         <h1 className="heading font-bold ml-36 mb-5 text-xl">
-          {login ? "Sign-In" : "Sign-Up"}
+          {loginUser ? "Sign-In" : "Sign-Up"}
         </h1>
         <form className="loginForm" onSubmit={handleSubmit}>
-          {!login && (
+          {!loginUser && (
             <div className="usernameInputs mb-5">
               <label htmlFor="username" className="font-bold">
                 Username
@@ -129,19 +132,19 @@ const Login = () => {
           </div>
 
           <button type='submit' className="w-full mt-6 mb-5 bg-[#f0c14b] rounded-sm h-10 border border-gray-600">
-            {login ? "Sign In" : "Sign Up"}
+            {loginUser ? "Sign In" : "Sign Up"}
           </button>
           <p className="text-xs">
-            {login
+            {loginUser
               ? "By Signing in you agree to the CUSTOM AMAZON CLONE Conditions of Use & Sale. Please see our Privacy Notice, our Cookies Notice and our interest based Ads Notice"
               : "By Signing in you agree to the CUSTOM AMAZON CLONE Conditions of Use & Sale. Please see our Privacy Notice, our Cookies Notice and our interest based Ads Notice"}
           </p>
 
-          {login ? (
+          {loginUser ? (
             <>
               {" "}
               <p className='text-sm mt-2'>Not registered yet?</p>
-              <AuthLink onClick={() => setLogin(false)}>
+              <AuthLink onClick={() => setLoginUser(false)}>
                 <button className="w-full border border-gray-600 mt-5 h-8 bg-slate-200">
                   Create your Amazon Account
                 </button>

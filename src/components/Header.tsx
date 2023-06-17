@@ -94,7 +94,9 @@ const Header = () => {
         </div>
           </Link>
 
-        <div className="returns__orders__nav flex flex-col mx-2 text-white ml-8 cursor-pointer">
+        <div className="returns__orders__nav flex flex-col mx-2 text-white ml-8 cursor-pointer"
+            onClick={() => navigate('/orders')}
+        >
           {/* Returns and orders */}
           <span className="return text-xs">Returns</span>
           <span className="orders font-medium">& Orders</span>

@@ -28,12 +28,14 @@ const Cart = () => {
             </h4>
             {products.map((product) => (
               <CartProduct
+                key={product.id}
                 id={product.id}
                 image={product.image}
                 title={product.title}
                 description={product.description}
                 price={product.price}
                 category={product.category}
+                hideButton={product.hideButton}
               />
             ))}
           </div>

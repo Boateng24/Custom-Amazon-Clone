@@ -6,7 +6,7 @@ import { AppDispatch } from "../store/store";
 import { removeItem } from "../slices/cartSlice";
 import {Paper} from '@mui/material';
 
-const CartProduct = ({id, image, title, description, price, category}:productType) => {
+const CartProduct = ({id, image, title, description, price, category, hideButton}:productType) => {
     const dispatch = useDispatch<AppDispatch>();
 
    const handleRemoveCartItem = (id:number) => {
@@ -34,7 +34,7 @@ const CartProduct = ({id, image, title, description, price, category}:productTyp
             <strong>{category}</strong>
           </div>
           <div className="removeItembtn">
-            <Button
+            {!hideButton && (<Button
               sx={{
                 backgroundColor: "#f0c14b",
                 fontWeight: "bold",
@@ -44,7 +44,7 @@ const CartProduct = ({id, image, title, description, price, category}:productTyp
               onClick={() => handleRemoveCartItem(id)}
             >
               Remove from Cart
-            </Button>
+            </Button>)}
           </div>
         </div>
       </div>
