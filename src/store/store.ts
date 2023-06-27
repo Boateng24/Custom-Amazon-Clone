@@ -1,11 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
 import cartSlice from '../slices/cartSlice';
 import authSlice from '../slices/authSlice';
+import searchSlice from '../slices/searchSlice';
 
 const store = configureStore({
   reducer: {
     addItemToBasket: cartSlice,
-    auth: authSlice
+    auth: authSlice,
+    search: searchSlice
   },
 });
 

@@ -1,35 +1,73 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faLocationDot, faMagnifyingGlass, faCartArrowDown} from '@fortawesome/free-solid-svg-icons';
-import {useNavigate, Link} from 'react-router-dom';
-import { useSelector} from 'react-redux';
+import {
+  faLocationDot,
+  faCartArrowDown,
+} from "@fortawesome/free-solid-svg-icons";
+import { useNavigate, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import {useAuthState} from 'react-firebase-hooks/auth';
-import {auth} from '../firebase/firebase';
-import {toast} from 'react-toastify';
-// import { addItem } from "../slices/cartSlice";
-// import i18next from '../config/language/language';
-const Header = () => {
-  const navigate = useNavigate();
-  const cartItemsCount = useSelector((state:RootState) => state.addItemToBasket.products.length);
-  const [user] = useAuthState(auth)
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase/firebase";
+import { toast } from "react-toastify";
+import SearchBar from "./SearchBar";
+import {useTranslation} from 'react-i18next'
+import { Select, SelectChangeEvent, MenuItem, } from "@mui/material";
+import axios from 'axios';
+import {useEffect, useState} from 'react';
+import ghanaFlag from '../assets/Flag_of_Ghana.png';
+import englandFlag from '../assets/Flag_of_the_United_Kingdom.png';
+import {Country} from '../@types'
 
+
+
+const Header = () => {
+  const [location, setLocation] = useState<Country>()
+  const {t, i18n} = useTranslation()
+
+  const navigate = useNavigate();
+  const cartItemsCount = useSelector(
+    (state: RootState) => state.addItemToBasket.products.length
+  );
+  const [user] = useAuthState(auth);
 
   const handleAuth = () => {
-    if(user){
+    if (user) {
       try {
         auth.signOut();
-        toast.success(`${user.displayName} is successfully signed out`)
+        toast.success(`${user.displayName} is successfully signed out`);
       } catch (error) {
-        console.log(error)
-        toast.error(error as string)
+        console.log(error);
+        toast.error(error as string);
       }
     }
+  };
+
+  const changeLanguage = (e:SelectChangeEvent) => {
+      i18n.changeLanguage(e.target.value).then(lang => {
+        console.log(lang)
+      })
   }
-  
+
+ const fetchLocation = async() => {
+    const {data} = await axios.get(
+      `https://api.geoapify.com/v1/ipinfo?&apiKey=${import.meta.env.VITE_APP_LOCATION}`
+    );
+    setLocation(data)
+    console.log(data)
+ }
+
+ useEffect(() => {
+   fetchLocation()
+ }, [])
+ 
+
   return (
     <div className="main-nav flex h-16 items-center bg-slate-800 sticky top-0 z-[100] w-screen">
       {/* Amazon logo */}
-      <div className="nav-logo object-contain cursor-pointer" onClick={() => navigate('/')}>
+      <div
+        className="nav-logo object-contain cursor-pointer"
+        onClick={() => navigate("/")}
+      >
         <img
           src="/amazon-2-logo-svgrepo-com.svg"
           alt="Amazon Logo"
@@ -40,76 +78,70 @@ const Header = () => {
 
       {/* Delivery logo and text */}
       <div className="delivery cursor-pointer">
-        <span className="first-delivery-span text-white font-extralight text-xs ml-4">
-          Deliver to
+        <span className="first-delivery-span text-white text-xs ml-4">
+          {t("deliver")}
         </span>
         <div className="flex space-x-1">
           <FontAwesomeIcon icon={faLocationDot} className="text-white mb-1" />
           <span className="second-delivery-span text-white font-bold text-sm">
-            Ghana
+            {location?.country.name}
           </span>
         </div>
       </div>
 
       {/* Search bar */}
-      <div className="searchcontainer m-4">
-        <div className="search-bar w-[900px] h-10 bg-white flex rounded-sm overflow-hidden">
-          <input
-            type="text"
-            className="search-input w-fit mx-12 bg-slate-50 h-8 mt-1 border-gray-300 focus:border-transparent focus:outline-none"
-            placeholder="Search Amazon"
-          />
-          <div className="absolute justify-start flex space-x-4 w-10 drop-shadow-2xl border border-gray-300 cursor-pointer">
-            <p className="mt-3.5 text-xs m-2">All</p>
-              <select className="nav-search-dropdown bg-inherit fixed mt-3 cursor-pointer">
-                {/* <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option> */}
-              </select>
-          </div>
-          <div className="m-auto w-14 bg-yellow-200 h-10 justify-end right-0 mr-0">
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass}
-              className="mt-3.5 flex ml-5"
-            />
-          </div>
-        </div>
-      </div>
+      <SearchBar />
 
       <div className="hearder__nav flex">
         <div className="language__nav">
           {/* language widget */}
-         <select defaultValue={"EN"} className="text-white mt-3 font-bold cursor-pointer">
-          <option>EN</option>
-          <option>GH</option>
-         </select>
+          <Select
+            className="mt-3 font-bold cursor-pointer bg-white h-10 w-100%"
+            onChange={changeLanguage}
+          >
+            <MenuItem value="en">EN</MenuItem>
+            <MenuItem value="gh">GH</MenuItem>    
+          </Select>
         </div>
 
-          <Link to={!user ? '/login' : '/'}>
-        <div className="greeting__nav flex flex-col mx-2 text-white ml-8" onClick={handleAuth}>
-          {/* Welcome and Account List */}
-          <span className="greet text-xs">Hello, {user ? user.displayName : 'User'}</span>
-          <span className="auth font-medium cursor-pointer">{user ? "Sign Out" : "Sign In"}</span>
-        </div>
-          </Link>
+        <Link to={!user ? "/login" : "/"}>
+          <div
+            className="greeting__nav flex flex-col mx-2 text-white ml-8"
+            onClick={handleAuth}
+          >
+            {/* Welcome and Account List */}
+            <span className="greet text-xs">
+              {t("hello")}, {user ? user.displayName : t("user")}
+            </span>
+            <span className="auth font-medium cursor-pointer">
+              {user ? t("signup") : t("signIn")}
+            </span>
+          </div>
+        </Link>
 
-        <div className="returns__orders__nav flex flex-col mx-2 text-white ml-8 cursor-pointer"
-            onClick={() => navigate('/orders')}
+        <div
+          className="returns__orders__nav flex flex-col mx-2 text-white ml-8 cursor-pointer"
+          onClick={() => navigate("/orders")}
         >
           {/* Returns and orders */}
-          <span className="return text-xs">Returns</span>
-          <span className="orders font-medium">& Orders</span>
+          <span className="return text-xs">{t("returns")}</span>
+          <span className="orders font-medium">& {t("orders")}</span>
         </div>
 
         <div className="cart__items flex items-start ml-8">
           {/* Cart icon with text */}
-          <FontAwesomeIcon icon={faCartArrowDown} className="text-white text-3xl mt-1 cursor-pointer" onClick={()=> navigate("/cart")}/>
-          <span className="header__optionLineTwo header__baskentCount text-white ml-1">{cartItemsCount}</span>
+          <FontAwesomeIcon
+            icon={faCartArrowDown}
+            className="text-white text-3xl mt-1 cursor-pointer"
+            onClick={() => navigate("/cart")}
+          />
+          <span className="header__optionLineTwo header__baskentCount text-white ml-1">
+            {cartItemsCount}
+          </span>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default Header
+export default Header;
