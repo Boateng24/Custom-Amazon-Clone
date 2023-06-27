@@ -14,8 +14,6 @@ import {useTranslation} from 'react-i18next'
 import { Select, SelectChangeEvent, MenuItem, } from "@mui/material";
 import axios from 'axios';
 import {useEffect, useState} from 'react';
-import ghanaFlag from '../assets/Flag_of_Ghana.png';
-import englandFlag from '../assets/Flag_of_the_United_Kingdom.png';
 import {Country} from '../@types'
 
 
